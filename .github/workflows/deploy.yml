@@ -1,0 +1,35 @@
+name: Deploy to VPS
+
+on:
+  workflow_run:
+    workflows: ["CI/CD"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "--- Conectado al VPS ---"
+            
+            # Cambia esta ruta a donde esté tu docker-compose.yml
+            cd /home/SergioAldavalde/app
+
+            echo "--- Actualizando imagen desde GHCR ---"
+            docker-compose pull
+
+            echo "--- Ejecutando contenedores actualizados ---"
+            docker-compose up -d
+
+            echo "--- Limpiando imágenes viejas ---"
+            docker image prune -f
