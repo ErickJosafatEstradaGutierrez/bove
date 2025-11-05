@@ -22,14 +22,20 @@ jobs:
           script: |
             echo "--- Conectado al VPS ---"
             
-            # Cambia esta ruta a donde esté tu docker-compose.yml
             cd /home/SergioAldavalde/app
 
             echo "--- Actualizando imagen desde GHCR ---"
+            # Login al registry (opcional, pero recomendado)
+            echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ghcr.io -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+            echo "--- Descargando imagen más reciente ---"
             docker-compose pull
 
-            echo "--- Ejecutando contenedores actualizados ---"
+            echo "--- Deteniendo contenedor anterior ---"
+            docker-compose down
+
+            echo "--- Ejecutando contenedor actualizado ---"
             docker-compose up -d
 
-            echo "--- Limpiando imágenes viejas ---"
-            docker image prune -f
+            echo "--- Limpiando recursos no utilizados ---"
+            docker system prune -f
