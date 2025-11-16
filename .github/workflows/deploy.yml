@@ -1,5 +1,49 @@
 # deploy.yml
 
+#name: Deploy to VPS
+
+#on:
+#  workflow_run:
+#    workflows: ["CI/CD"]
+#    types:
+#      - completed
+
+#jobs:
+#  deploy:
+#    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#    runs-on: ubuntu-latest
+
+#    steps:
+#      - name: Deploy to VPS via SSH
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USER }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          port: ${{ secrets.SSH_PORT }}
+#          script: |
+#            echo "--- Conectado al VPS ---"
+            
+#            cd /home/SergioAldavalde/app
+
+#            echo "--- Actualizando imagen desde GHCR ---"
+#            # Login al registry (opcional, pero recomendado)
+#            echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ghcr.io -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+#            echo "--- Descargando imagen más reciente ---"
+#            docker-compose pull
+
+#            echo "--- Deteniendo contenedor anterior ---"
+#            docker-compose down
+
+#            echo "--- Ejecutando contenedor actualizado ---"
+#            docker-compose up -d
+#
+#            echo "--- Limpiando recursos no utilizados ---"
+#            docker system prune -f
+
+############################### V2
+
 name: Deploy to VPS
 
 on:
@@ -26,18 +70,11 @@ jobs:
             
             cd /home/SergioAldavalde/app
 
-            echo "--- Actualizando imagen desde GHCR ---"
-            # Login al registry (opcional, pero recomendado)
+            echo "--- Login GHCR ---"
             echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ghcr.io -u "${{ secrets.REGISTRY_USER }}" --password-stdin
 
-            echo "--- Descargando imagen más reciente ---"
-            docker-compose pull
+            echo "--- Actualizando contenedor GREEN ---"
+            bash scripts/deploy_green.sh
 
-            echo "--- Deteniendo contenedor anterior ---"
-            docker-compose down
-
-            echo "--- Ejecutando contenedor actualizado ---"
-            docker-compose up -d
-
-            echo "--- Limpiando recursos no utilizados ---"
-            docker system prune -f
+            echo "Para activar green ejecuta manualmente:"
+            echo "bash scripts/switch_to_green.sh"
