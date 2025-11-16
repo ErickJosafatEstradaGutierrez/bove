@@ -59,5 +59,8 @@ export default defineConfig({
       host: '0.0.0.0',
       port: 5173
     }
+  },
+  preview: {
+    allowedHosts: ['app_upstream', '74.249.41.43', 'localhost']
   }
 });
