@@ -15,17 +15,22 @@ jobs:
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          host: 20.228.108.57
+          username: azureuser
+          key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+            QyNTUxOQAAACCx3hoAzEpIqCfjw5FaHq82W27CcoXJ3ZnhptZkdiOFAwAAAJCOO6h/jjuo
+            fwAAAAtzc2gtZWQyNTUxOQAAACCx3hoAzEpIqCfjw5FaHq82W27CcoXJ3ZnhptZkdiOFAw
+            AAAEAjSTOJAcgZJfkqHDDOKcUyd4h7JPJjc0o7+RWuLd5zjbHeGgDMSkioJ+PDkVoerzZb
+            bsJyhcndmeGm1mR2I4UDAAAADGF6dXJlLWdpdGh1YgE=
+            -----END OPENSSH PRIVATE KEY-----
+
+          port: 22
           script: |
             echo "--- Conectado al VPS ---"
-            
             cd /home/azureuser/app
-
             echo "--- Login GHCR ---"
             echo "${{ secrets.REGISTRY_TOKEN }}" | docker login ghcr.io -u "${{ secrets.REGISTRY_USER }}" --password-stdin
-
             echo "--- Despliegue automático BLUE/GREEN ---"
             bash scripts/deploy_auto.sh
