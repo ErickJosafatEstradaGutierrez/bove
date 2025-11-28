@@ -143,7 +143,7 @@ function WelcomeScreen({ onStartClick }) {
         />
         
         <h1 className="main-title">
-          Mapa UTEQ (Version Erick Josafat Estrada Gutierrez )
+          Mapaaaaa UTEQ (Version Erick Josafat Estrada Gutierrez )
         </h1>
         
         <p className="subtitle">
